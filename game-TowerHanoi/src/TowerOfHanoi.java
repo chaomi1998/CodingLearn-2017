@@ -18,7 +18,11 @@ public class TowerOfHanoi{
     //碟子初始化
     private final int MAX_DIFFICULT = 8;
     private final int DIFFICULT = 7;
-    private TowerDisk[] disks = new TowerDisk[DIFFICULT];
+    private Disk[] disks = new Disk[DIFFICULT];
+    //塔初始化
+    private Tower one_tower = new Tower(TABLE_WIDTH / 2, MAX_DIFFICULT);
+    private Tower two_tower = new Tower(TABLE_WIDTH / 3 / 2 , MAX_DIFFICULT);
+    private Tower three_tower = new Tower(5 * TABLE_WIDTH / 3 / 2, MAX_DIFFICULT);
     public void init(){
         tableArea.setPreferredSize(
                 new Dimension(TABLE_WIDTH, TABLE_HEIGHT));
@@ -31,8 +35,13 @@ public class TowerOfHanoi{
                 System.exit(0);
             }
         });
-        for (int i = 0; i < disks.length;i++){
-            disks[i] = new TowerDisk(START_TOWER,TABLE_HEIGHT, i);
+        for (int i = disks.length - 1; i >= 0;i--){
+            disks[i] = new Disk(START_TOWER,TABLE_HEIGHT, i);
+            one_tower.addDisk(disks[i].disk_number);
+            for(int c : one_tower.disks){System.out.print("|"+c);}
+            disks[i].high =one_tower.putDisk(disks[i].disk_number);
+            //System.out.println("" + disks[i].high);
+            disks[i].move();
         }
 
         f.pack();
@@ -56,19 +65,20 @@ public class TowerOfHanoi{
             g.fillRect(TABLE_WIDTH / 2 - TOWER_CORE_WIDTH / 2,  0, TOWER_CORE_WIDTH, TABLE_HEIGHT);
             g.fillRect(5 * TABLE_WIDTH / 3 / 2 - TOWER_CORE_WIDTH / 2,  0, TOWER_CORE_WIDTH, TABLE_HEIGHT);
 
-            for(TowerDisk disk: disks){
+            for(Disk disk: disks){
                 g.setColor(Color.WHITE);
                 g.fillRect(disk.disk_X
-                        , disk.disk_Y - (MAX_DIFFICULT - DIFFICULT) * disk.DISK_HEIGH
+                        , disk.disk_Y
                         , disk.disk_WIDTH
                         , disk.DISK_HEIGH);
                 g.setColor(Color.BLACK);
                 g.drawRect(disk.disk_X
-                        , disk.disk_Y - (MAX_DIFFICULT - DIFFICULT) * disk.DISK_HEIGH
+                        , disk.disk_Y
                         , disk.disk_WIDTH
                         , disk.DISK_HEIGH);
+                g.drawString(""+disk.disk_number ,disk.disk_X+10, disk.disk_Y+20);
             }
-
+            //- (MAX_DIFFICULT - DIFFICULT) * disk.DISK_HEIGH
             //g.fillRect(disks[0].disk_X, disks[0].disk_Y, disks[0].disk_WIDTH, disks[0].DISK_HEIGH);
         }
     }
