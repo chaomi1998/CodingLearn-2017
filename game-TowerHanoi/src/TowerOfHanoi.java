@@ -1,9 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 
 /**
  * Created by liu on 2017/1/18 018.
@@ -30,7 +27,7 @@ public class TowerOfHanoi{
         for (int i = disks.length - 1; i >= 0;i--){
             disks[i] = new Disk(START_TOWER,TABLE_HEIGHT, i);
             one_tower.addDisk(disks[i].disk_number);
-            for(int c : one_tower.disks){System.out.print("|"+c);}
+            //for(int c : one_tower.disks){System.out.print("|"+c);}
             disks[i].high =one_tower.putDisk(disks[i].disk_number);
             //System.out.println("" + disks[i].high);
             disks[i].move();
@@ -39,77 +36,78 @@ public class TowerOfHanoi{
         tableArea.setPreferredSize(
                 new Dimension(TABLE_WIDTH, TABLE_HEIGHT));
         //键盘监听
-        tableArea.addKeyListener(new KeyListener() {
+        //鼠标监听部分 并不好用
+        tableArea.addMouseListener(new MouseAdapter() {
             private boolean take = true;
             private boolean put = false;
             private int move_disk_number;
             @Override
-            public void keyTyped(KeyEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 if(take){
-                    if(e.getKeyCode() == KeyEvent.VK_LEFT){
-                        move_disk_number = two_tower.getTop();
-                        if(move_disk_number != 0){
-                            two_tower.removed(move_disk_number);
-                            take = false;
-                            put = true;
+                    if(e.getY() > TABLE_HEIGHT / 2 && e.getY()<= TABLE_HEIGHT) {
+                        if (e.getX() > 0 && e.getX() <= TABLE_WIDTH / 3) {
+                            move_disk_number = two_tower.getTop();
+                            if (move_disk_number != 0) {
+                                two_tower.removed(move_disk_number);
+                                take = false;
+                                put = true;
+                            }
                         }
-                    }
-                    if(e.getKeyCode() == KeyEvent.VK_UP){
-                        move_disk_number = one_tower.getTop();
-                        if(move_disk_number != 0){
-                            one_tower.removed(move_disk_number);
-                            take = false;
-                            put = true;
+                        if (e.getX() > TABLE_WIDTH / 3 && e.getX() <= 2 * TABLE_WIDTH / 3) {
+                            move_disk_number = one_tower.getTop();
+                            if (move_disk_number != 0) {
+                                System.out.println("" + move_disk_number);
+                                one_tower.removed(move_disk_number);
+                                take = false;
+                                put = true;
+                            }
                         }
-                    }
-                    if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-                        move_disk_number = three_tower.getTop();
-                        if(move_disk_number != 0){
-                            three_tower.removed(move_disk_number);
-                            take = false;
-                            put = true;
+                        if (e.getX() > 2 * TABLE_WIDTH / 3 && e.getX() <= TABLE_WIDTH) {
+                            move_disk_number = three_tower.getTop();
+                            if (move_disk_number != 0) {
+                                three_tower.removed(move_disk_number);
+                                take = false;
+                                put = true;
+                            }
                         }
                     }
                 }
                 if(put){
-                    if(e.getKeyCode() == KeyEvent.VK_LEFT){
-                        two_tower.addDisk(move_disk_number);
-                        disks[move_disk_number - 1].high = two_tower.putDisk(move_disk_number);
-                        disks[move_disk_number - 1].xMove(two_tower.location);
-                        disks[move_disk_number - 1].move();
-                        take = true;
-                        put = false;
-                        tableArea.repaint();
-                    }
-                    if(e.getKeyCode() == KeyEvent.VK_UP){
-                        one_tower.addDisk(move_disk_number);
-                        disks[move_disk_number - 1].high = one_tower.putDisk(move_disk_number);
-                        disks[move_disk_number - 1].xMove(one_tower.location);
-                        disks[move_disk_number - 1].move();
-                        take = true;
-                        put = false;
-                        tableArea.repaint();
-                    }
-                    if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-                        three_tower.addDisk(move_disk_number);
-                        disks[move_disk_number - 1].high = three_tower.putDisk(move_disk_number);
-                        disks[move_disk_number - 1].xMove(three_tower.location);
-                        disks[move_disk_number - 1].move();
-                        take = true;
-                        put = false;
-                        tableArea.repaint();
+                    if(e.getY() > 0 && e.getY()<= TABLE_HEIGHT / 2) {
+                        if (e.getX() > 0 && e.getX() <= TABLE_WIDTH / 3) {
+                            //System.out.println(""+move_disk_number);
+                            two_tower.addDisk(move_disk_number);
+                            disks[move_disk_number - 1].high = two_tower.putDisk(move_disk_number);
+                            disks[move_disk_number - 1].xMove(two_tower.location);
+                            disks[move_disk_number - 1].move();
+                            take = true;
+                            put = false;
+                            tableArea.repaint();
+                        }
+                        if (e.getX() > TABLE_WIDTH / 3 && e.getX() <= 2 * TABLE_WIDTH / 3) {
+                            System.out.println("" + move_disk_number);
+                            one_tower.addDisk(move_disk_number);
+                            disks[move_disk_number - 1].high = one_tower.putDisk(move_disk_number);
+                            disks[move_disk_number - 1].xMove(one_tower.location);
+                            disks[move_disk_number - 1].move();
+                            take = true;
+                            put = false;
+                            tableArea.repaint();
+                        }
+                        if (e.getX() > 2 * TABLE_WIDTH / 3 && e.getX() <= TABLE_WIDTH) {
+                            three_tower.addDisk(move_disk_number);
+                            disks[move_disk_number - 1].high = three_tower.putDisk(move_disk_number);
+                            disks[move_disk_number - 1].xMove(three_tower.location);
+                            disks[move_disk_number - 1].move();
+                            take = true;
+                            put = false;
+                            tableArea.repaint();
+                        }
                     }
                 }
             }
-            @Override
-            public void keyPressed(KeyEvent e) {
-
-            }
-            @Override
-            public void keyReleased(KeyEvent e){
-
-            }
         });
+
 
         //窗口监听器
         f.addWindowListener(new WindowAdapter(){
