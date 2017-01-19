@@ -39,7 +39,7 @@ public class Tower {
     public int getTop(){
         for(int i = this.disks.length - 1; i >= 0; i--){
             if(this.disks[i] > 0){
-                return i;
+                return disks[i];
             }
         }
         return 0;

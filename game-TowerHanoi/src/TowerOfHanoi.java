@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -25,9 +25,7 @@ public class TowerOfHanoi{
     private Tower one_tower = new Tower(TABLE_WIDTH / 2, MAX_DIFFICULT);
     private Tower two_tower = new Tower(TABLE_WIDTH / 3 / 2 , MAX_DIFFICULT);
     private Tower three_tower = new Tower(5 * TABLE_WIDTH / 3 / 2, MAX_DIFFICULT);
-    private boolean take = true;
-    private boolean put = false;
-    private int move_disk_number;
+
     public void init(){
         for (int i = disks.length - 1; i >= 0;i--){
             disks[i] = new Disk(START_TOWER,TABLE_HEIGHT, i);
@@ -41,11 +39,14 @@ public class TowerOfHanoi{
         tableArea.setPreferredSize(
                 new Dimension(TABLE_WIDTH, TABLE_HEIGHT));
         //键盘监听
-        KeyAdapter keyProcessor = new KeyAdapter() {
+        tableArea.addKeyListener(new KeyListener() {
+            private boolean take = true;
+            private boolean put = false;
+            private int move_disk_number;
             @Override
-            public void keyPressed(KeyEvent e) {
+            public void keyTyped(KeyEvent e) {
                 if(take){
-                    if(e.getKeyCode() == KeyEvent.VK_Z){
+                    if(e.getKeyCode() == KeyEvent.VK_LEFT){
                         move_disk_number = two_tower.getTop();
                         if(move_disk_number != 0){
                             two_tower.removed(move_disk_number);
@@ -53,7 +54,7 @@ public class TowerOfHanoi{
                             put = true;
                         }
                     }
-                    if(e.getKeyCode() == KeyEvent.VK_X){
+                    if(e.getKeyCode() == KeyEvent.VK_UP){
                         move_disk_number = one_tower.getTop();
                         if(move_disk_number != 0){
                             one_tower.removed(move_disk_number);
@@ -61,7 +62,7 @@ public class TowerOfHanoi{
                             put = true;
                         }
                     }
-                    if(e.getKeyCode() == KeyEvent.VK_C){
+                    if(e.getKeyCode() == KeyEvent.VK_RIGHT){
                         move_disk_number = three_tower.getTop();
                         if(move_disk_number != 0){
                             three_tower.removed(move_disk_number);
@@ -71,7 +72,7 @@ public class TowerOfHanoi{
                     }
                 }
                 if(put){
-                    if(e.getKeyCode() == KeyEvent.VK_Z){
+                    if(e.getKeyCode() == KeyEvent.VK_LEFT){
                         two_tower.addDisk(move_disk_number);
                         disks[move_disk_number - 1].high = two_tower.putDisk(move_disk_number);
                         disks[move_disk_number - 1].xMove(two_tower.location);
@@ -80,7 +81,7 @@ public class TowerOfHanoi{
                         put = false;
                         tableArea.repaint();
                     }
-                    if(e.getKeyCode() == KeyEvent.VK_X){
+                    if(e.getKeyCode() == KeyEvent.VK_UP){
                         one_tower.addDisk(move_disk_number);
                         disks[move_disk_number - 1].high = one_tower.putDisk(move_disk_number);
                         disks[move_disk_number - 1].xMove(one_tower.location);
@@ -89,7 +90,7 @@ public class TowerOfHanoi{
                         put = false;
                         tableArea.repaint();
                     }
-                    if(e.getKeyCode() == KeyEvent.VK_C){
+                    if(e.getKeyCode() == KeyEvent.VK_RIGHT){
                         three_tower.addDisk(move_disk_number);
                         disks[move_disk_number - 1].high = three_tower.putDisk(move_disk_number);
                         disks[move_disk_number - 1].xMove(three_tower.location);
@@ -100,8 +101,15 @@ public class TowerOfHanoi{
                     }
                 }
             }
-        };
-        tableArea.addKeyListener(keyProcessor);
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+            @Override
+            public void keyReleased(KeyEvent e){
+
+            }
+        });
 
         //窗口监听器
         f.addWindowListener(new WindowAdapter(){
