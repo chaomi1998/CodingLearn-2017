@@ -27,28 +27,29 @@ public class TowerOfHanoi{
         for (int i = disks.length - 1; i >= 0;i--){
             disks[i] = new Disk(START_TOWER,TABLE_HEIGHT, i);
             one_tower.addDisk(disks[i].disk_number);
-            //for(int c : one_tower.disks){System.out.print("|"+c);}
             disks[i].high =one_tower.putDisk(disks[i].disk_number);
-            //System.out.println("" + disks[i].high);
             disks[i].move();
         }
 
         tableArea.setPreferredSize(
                 new Dimension(TABLE_WIDTH, TABLE_HEIGHT));
-        //键盘监听
+
         //鼠标监听部分 并不好用
         tableArea.addMouseListener(new MouseAdapter() {
             private boolean take = true;
             private boolean put = false;
             private int move_disk_number;
+            private Tower tmp_tower;
+            private Toolkit waring = Toolkit.getDefaultToolkit();
             @Override
             public void mouseClicked(MouseEvent e) {
+                //取碟子 取完之后关闭取打开放
                 if(take){
                     if(e.getY() > TABLE_HEIGHT / 2 && e.getY()<= TABLE_HEIGHT) {
                         if (e.getX() > 0 && e.getX() <= TABLE_WIDTH / 3) {
                             move_disk_number = two_tower.getTop();
                             if (move_disk_number != 0) {
-                                two_tower.removed(move_disk_number);
+                                tmp_tower = two_tower;
                                 take = false;
                                 put = true;
                             }
@@ -56,8 +57,7 @@ public class TowerOfHanoi{
                         if (e.getX() > TABLE_WIDTH / 3 && e.getX() <= 2 * TABLE_WIDTH / 3) {
                             move_disk_number = one_tower.getTop();
                             if (move_disk_number != 0) {
-                                System.out.println("" + move_disk_number);
-                                one_tower.removed(move_disk_number);
+                                tmp_tower = one_tower;
                                 take = false;
                                 put = true;
                             }
@@ -65,43 +65,67 @@ public class TowerOfHanoi{
                         if (e.getX() > 2 * TABLE_WIDTH / 3 && e.getX() <= TABLE_WIDTH) {
                             move_disk_number = three_tower.getTop();
                             if (move_disk_number != 0) {
-                                three_tower.removed(move_disk_number);
+                                tmp_tower = three_tower;
                                 take = false;
                                 put = true;
                             }
                         }
                     }
                 }
+                //放碟子 比已有的大就放回去 比已有的小就放下
                 if(put){
                     if(e.getY() > 0 && e.getY()<= TABLE_HEIGHT / 2) {
                         if (e.getX() > 0 && e.getX() <= TABLE_WIDTH / 3) {
                             //System.out.println(""+move_disk_number);
-                            two_tower.addDisk(move_disk_number);
-                            disks[move_disk_number - 1].high = two_tower.putDisk(move_disk_number);
-                            disks[move_disk_number - 1].xMove(two_tower.location);
-                            disks[move_disk_number - 1].move();
-                            take = true;
-                            put = false;
-                            tableArea.repaint();
+                            if(two_tower.getTop() != 0 && move_disk_number > two_tower.getTop()){
+                                waring.beep();
+                                take = true;
+                                put = false;
+                            }
+                            else {
+                                tmp_tower.removed(move_disk_number);
+                                two_tower.addDisk(move_disk_number);
+                                disks[move_disk_number - 1].high = two_tower.putDisk(move_disk_number);
+                                disks[move_disk_number - 1].xMove(two_tower.location);
+                                disks[move_disk_number - 1].move();
+                                take = true;
+                                put = false;
+                                tableArea.repaint();
+                            }
                         }
                         if (e.getX() > TABLE_WIDTH / 3 && e.getX() <= 2 * TABLE_WIDTH / 3) {
-                            System.out.println("" + move_disk_number);
-                            one_tower.addDisk(move_disk_number);
-                            disks[move_disk_number - 1].high = one_tower.putDisk(move_disk_number);
-                            disks[move_disk_number - 1].xMove(one_tower.location);
-                            disks[move_disk_number - 1].move();
-                            take = true;
-                            put = false;
-                            tableArea.repaint();
+                            if(one_tower.getTop() != 0 && move_disk_number > one_tower.getTop()){
+                                waring.beep();
+                                take = true;
+                                put = false;
+                            }
+                            else {
+                                tmp_tower.removed(move_disk_number);
+                                one_tower.addDisk(move_disk_number);
+                                disks[move_disk_number - 1].high = one_tower.putDisk(move_disk_number);
+                                disks[move_disk_number - 1].xMove(one_tower.location);
+                                disks[move_disk_number - 1].move();
+                                take = true;
+                                put = false;
+                                tableArea.repaint();
+                            }
                         }
                         if (e.getX() > 2 * TABLE_WIDTH / 3 && e.getX() <= TABLE_WIDTH) {
-                            three_tower.addDisk(move_disk_number);
-                            disks[move_disk_number - 1].high = three_tower.putDisk(move_disk_number);
-                            disks[move_disk_number - 1].xMove(three_tower.location);
-                            disks[move_disk_number - 1].move();
-                            take = true;
-                            put = false;
-                            tableArea.repaint();
+                            if(three_tower.getTop() != 0 && move_disk_number > three_tower.getTop()){
+                                waring.beep();
+                                take = true;
+                                put = false;
+                            }
+                            else {
+                                tmp_tower.removed(move_disk_number);
+                                three_tower.addDisk(move_disk_number);
+                                disks[move_disk_number - 1].high = three_tower.putDisk(move_disk_number);
+                                disks[move_disk_number - 1].xMove(three_tower.location);
+                                disks[move_disk_number - 1].move();
+                                take = true;
+                                put = false;
+                                tableArea.repaint();
+                            }
                         }
                     }
                 }
@@ -126,7 +150,7 @@ public class TowerOfHanoi{
         new TowerOfHanoi().init();
     }
 
-    class MyCanvas extends Canvas{
+    class MyCanvas extends JPanel{
         @Override
         public void paint(Graphics g){
             super.paint(g);
@@ -154,8 +178,9 @@ public class TowerOfHanoi{
                         , disk.DISK_HEIGH);
                 g.drawString(""+disk.disk_number ,disk.disk_X+10, disk.disk_Y+20);
             }
-            //- (MAX_DIFFICULT - DIFFICULT) * disk.DISK_HEIGH
-            //g.fillRect(disks[0].disk_X, disks[0].disk_Y, disks[0].disk_WIDTH, disks[0].DISK_HEIGH);
+            //提示信息
+            g.setColor(Color.WHITE);
+            g.drawString("操作指南：窗口下半单击拿取，上半单击放置。新增判断模块和提示",0,TABLE_HEIGHT - 10);
         }
     }
 }

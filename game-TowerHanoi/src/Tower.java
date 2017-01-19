@@ -17,7 +17,6 @@ public class Tower {
     private void add(int disk_number, int tower_high){
         if(this.disks[tower_high] > 0){
             this.disks[tower_high + 1] = disk_number;
-            //System.out.println("" + disks[tower_high]);
         }else if(tower_high == 0){
             this.disks[tower_high] = disk_number;
         }
@@ -27,7 +26,6 @@ public class Tower {
     }
 
     public int putDisk(int disk_number){
-        //System.out.println(""+disk_number);
         for(int i = this.disks.length - 1; i >= 0; i--){
             if(this.disks[i] == disk_number){
                 return i;
