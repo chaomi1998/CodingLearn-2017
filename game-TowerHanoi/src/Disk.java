@@ -20,4 +20,8 @@ public class Disk {
         this.disk_Y = this.high * this.DISK_HEIGH;
     }
 
+    public void xMove(int x){
+        this.disk_X = x - this.disk_WIDTH / 2;
+    }
+
 }

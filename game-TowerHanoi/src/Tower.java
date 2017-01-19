@@ -36,4 +36,22 @@ public class Tower {
         return 1;
     }
 
+    public int getTop(){
+        for(int i = this.disks.length - 1; i >= 0; i--){
+            if(this.disks[i] > 0){
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public void removed(int disk_number){
+        for(int i = disks.length - 1; i >= 0; i--){
+            if(disks[i] == disk_number){
+                disks[i] = 0;
+                break;
+            }
+        }
+    }
+
 }
